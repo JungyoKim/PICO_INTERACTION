@@ -14,7 +14,7 @@
   let prevRtc = 0;
   let audio;
   let isAudioInit = false;
-  let sounds = ['/piano/FX_piano01.mp3', '/piano/FX_piano03.mp3', '/piano/FX_piano05.mp3', '/piano/FX_piano06.mp3', '/piano/FX_piano08.mp3', '/piano/FX_piano10.mp3', 'piano/FX_piano12.mp3'];
+  let sounds = ['/piano/FX_piano01.mp3', '/piano/FX_piano03.mp3', '/piano/FX_piano05.mp3', '/piano/FX_piano06.mp3', '/piano/FX_piano08.mp3', '/piano/FX_piano10.mp3', '/piano/FX_piano12.mp3'];
 
     let isModalOpen = true;
 
@@ -25,7 +25,9 @@
   function initAudio() {
     if (typeof window !== 'undefined' && !isAudioInit) {
       audio = new Audio();
-      audio.play();
+      audio.play().catch((error) => {
+        console.error("Audio play failed:", error);
+      });
       isAudioInit = true;
       fetchData();
     }
@@ -62,11 +64,16 @@
       playlist = data.play;
       rtc = data.time;
 
-      if (rtc !== prevRtc && typeof window !== 'undefined' && audio.ended) {
-        let soundIndex = Math.floor(displayUltrasonic / (50 / 7));
-        soundIndex = ultrasonic > 50 ? 6 : soundIndex;
-        audio.src = sounds[soundIndex];
-        audio.play();
+      if (rtc !== prevRtc && typeof window !== 'undefined') {
+      let soundIndex = Math.floor(displayUltrasonic / (50 / 7));
+      soundIndex = ultrasonic > 50 ? 6 : soundIndex;
+      
+      audio.src = sounds[soundIndex];
+      audio.play().catch((error) => {
+        console.error("Audio play failed:", error);
+      });
+
+      
       
 
         // audio.onended = async () => {
